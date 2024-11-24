@@ -7,13 +7,16 @@ class Board {
     private int redX, redY, goalX, goalY;
     private int purpleX, purpleY, goalXP, goalYP;
     private boolean singleCube;
-    private final List<char[][]> history = new ArrayList<>();
+    private final List<Board> history = new ArrayList<>();
     public Board(int level) {
         initializeBoard(level);
         saveBoardState();
     }
     public char[][] getBoard() {
-        return board;
+        return this.board;
+    }
+    public Board getBoardB() {
+        return this;
     }
     public void setBoardCell(int x, int y, char value) {
         board[x][y] = value;
@@ -57,7 +60,15 @@ class Board {
     public boolean isSingleCube() {
         return singleCube;
     }
-    public     void initializeBoard(int level) {
+    public void removeRedCube() {
+        setRedPosition(-1, -1);
+    }
+
+    public void removePurpleCube() {
+        setPurplePosition(-1, -1);
+    }
+
+    public void initializeBoard(int level) {
         switch (level) {
             case 1, 2, 3 -> {
                 singleCube = true;
@@ -160,16 +171,34 @@ class Board {
             }
         }
     }
-    public static char[][] copyBoard(char[][] original) {
+
+
+    private void setGoalY(int goalY) {
+        this.goalY=goalY;
+    }
+
+    private void setGoalX(int goalX) {
+        this.goalX=goalX;
+    }
+
+    private void setBoard(char[][] board) {
+        this.board=board;
+    }
+
+    public static Board copyBoard(Board board) {
+        Board Boardcopy = board;
+        char[][] original =board.getBoard();
+
         char[][] copy = new char[original.length][];
         for (int i = 0; i < original.length; i++) {
             copy[i] = Arrays.copyOf(original[i], original[i].length);
         }
-        return copy;
+        Boardcopy.board=copy;
+        return Boardcopy;
     }
 
     private void saveBoardState() {
-        history.add(copyBoard(board));
+        history.add(copyBoard(this));
     }
 
     public void printCurrentBoard() {
@@ -178,7 +207,7 @@ class Board {
         }
         System.out.println();
     }
-//    public void restorePreviousState() {
+    //    public void restorePreviousState() {
 //        if (history.size() > 1) {
 //            history.remove(history.size() - 1);
 //            board = copyBoard(history.get(history.size() - 1));
@@ -188,4 +217,15 @@ class Board {
         saveBoardState();
         printCurrentBoard();
     }
+
+    public void setRedPosition(int redX, int newRedY) {
+        this.redX=redX;
+        this.redY=newRedY;
+    }
+
+    public void setPurplePosition(int newPurpleX, int purpleY) {
+        this.purpleX=newPurpleX;
+        this.purpleY=purpleY;
+    }
+
 }
