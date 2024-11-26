@@ -1,13 +1,13 @@
 import java.util.*;
 
-public class DFSSolver {
+public class DFSSolverR {
 
     private static final String[] DIRECTIONS = {"up", "down", "left", "right"};
 
     private Set<String> visitedStates;
     private List<String> solutionPath;
 
-    public DFSSolver() {
+    public DFSSolverR() {
         this.visitedStates = new HashSet<>();
         this.solutionPath = new ArrayList<>();
     }
@@ -24,6 +24,7 @@ public class DFSSolver {
 
     private boolean dfs(State2 gameState, String lastMove) {
         String currentState = encodeState(gameState.board);
+
         if (visitedStates.contains(currentState)) {
             return false;
         }

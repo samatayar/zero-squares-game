@@ -196,6 +196,30 @@ class Board {
         Boardcopy.board=copy;
         return Boardcopy;
     }
+    public Board cloneState() {
+        Board clonedBoard = new Board(1);
+
+        char[][] clonedArray = new char[this.board.length][];
+        for (int i = 0; i < this.board.length; i++) {
+            clonedArray[i] = Arrays.copyOf(this.board[i], this.board[i].length);
+        }
+        clonedBoard.setBoard(clonedArray);
+
+        clonedBoard.setRedX(this.redX);
+        clonedBoard.setRedY(this.redY);
+        clonedBoard.setGoalX(this.goalX);
+        clonedBoard.setGoalY(this.goalY);
+
+        if (!this.singleCube) {
+            clonedBoard.setPurpleX(this.purpleX);
+            clonedBoard.setPurpleY(this.purpleY);
+        }
+        clonedBoard.goalXP = this.goalXP;
+        clonedBoard.goalYP = this.goalYP;
+        clonedBoard.singleCube = this.singleCube;
+
+        return clonedBoard;
+    }
 
     private void saveBoardState() {
         history.add(copyBoard(this));
@@ -227,5 +251,6 @@ class Board {
         this.purpleX=newPurpleX;
         this.purpleY=purpleY;
     }
+
 
 }
