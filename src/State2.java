@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 public class State2 extends JPanel {
     public Board board;
     private  int level = 2;
-    private static final int CELL_SIZE = 50; // Size of each cell
+    private static final int CELL_SIZE = 50;
 
 
     public State2() {
@@ -565,6 +565,7 @@ return board;
 
         }
         /////////////////////////////////////////////
+
 
 
         frame.addKeyListener(new KeyListener() {
