@@ -19,7 +19,7 @@ public class AStarSolver {
             State2 currentState = currentNode.state;
             List<String> currentPath = currentNode.path;
 
-            if (currentState.checkGoal()) {
+            if (currentState.checkGoal(currentState.board)) {
                 System.out.println("visitedNodesCount: " + visitedNodesCount);
                 return currentPath;
             }
@@ -27,7 +27,6 @@ public class AStarSolver {
             for (String direction : DIRECTIONS) {
                 State2 newState = cloneState(currentState);
                 newState.move(direction);
-
                 String encodedState = encodeState(newState.board);
                 if (!visitedStates.contains(encodedState)) {
                     visitedStates.add(encodedState);
@@ -39,19 +38,20 @@ public class AStarSolver {
                     int gCost = currentNode.gCost + 1;
                     int hCost = heuristic(newState);
                     int fCost = gCost + hCost;
-
+                    System.out.println("hhh"+hCost);
                     priorityQueue.add(new Node(newState, newPath, gCost, fCost));
                 }
             }
         }
 
         System.out.println("visitedNodesCount: " + visitedNodesCount);
+
         return Collections.emptyList();
     }
 
     private int heuristic(State2 state) {
 
-        return state.board.getMisplacedTiles();
+        return state.getHeuristicValue();
     }
 
     private String encodeState(Board board) {

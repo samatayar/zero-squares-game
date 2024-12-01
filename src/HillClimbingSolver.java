@@ -1,24 +1,24 @@
 import java.util.*;
 
-public class BFSSolver {
+public class HillClimbingSolver {
 
     private static final String[] DIRECTIONS = {"up", "down", "left", "right"};
 
     public List<String> solve(State2 gameState) {
+        List<String> solutionPath = new ArrayList<>();
         Set<String> visitedStates = new HashSet<>();
-        Queue<Node> queue = new LinkedList<>();
 
-        queue.add(new Node(gameState, new ArrayList<>()));
-        visitedStates.add(encodeState(gameState.board));
+        State2 currentState = gameState;
+        visitedStates.add(encodeState(currentState.board));
 
-        while (!queue.isEmpty()) {
-            Node currentNode = queue.poll();
-            State2 currentState = currentNode.state;
-            List<String> currentPath = currentNode.path;
-
-            if (currentState.checkGoal(gameState.board)) {
-                return currentPath;
+        while (true) {
+            if (currentState.checkGoal(currentState.board)) {
+                return solutionPath;
             }
+
+            String bestDirection = null;
+            State2 bestState = null;
+            int bestHeuristic = Integer.MAX_VALUE;
 
             for (String direction : DIRECTIONS) {
                 State2 newState = cloneState(currentState);
@@ -26,15 +26,29 @@ public class BFSSolver {
 
                 String encodedState = encodeState(newState.board);
                 if (!visitedStates.contains(encodedState)) {
-                    visitedStates.add(encodedState);
-                    List<String> newPath = new ArrayList<>(currentPath);
-                    newPath.add(direction);
-                    queue.add(new Node(newState, newPath));
+                    int heuristic = calculateHeuristic(newState);
+                    if (heuristic < bestHeuristic) {
+                        bestHeuristic = heuristic;
+                        bestState = newState;
+                        bestDirection = direction;
+                    }
                 }
             }
+
+            if (bestState == null) {
+                break;
+            }
+
+            currentState = bestState;
+            visitedStates.add(encodeState(currentState.board));
+            solutionPath.add(bestDirection);
         }
 
         return Collections.emptyList();
+    }
+
+    private int calculateHeuristic(State2 state) {
+        return state.getHeuristicValue();
     }
 
     private String encodeState(Board board) {
@@ -52,15 +66,5 @@ public class BFSSolver {
         State2 clonedState = new State2();
         clonedState.board = original.board.cloneState();
         return clonedState;
-    }
-
-    private static class Node {
-        State2 state;
-        List<String> path;
-
-        Node(State2 state, List<String> path) {
-            this.state = state;
-            this.path = path;
-        }
     }
 }

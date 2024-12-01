@@ -129,20 +129,48 @@ class Board {
         switch (level) {
             case 4 -> {
                 board = new char[][]{
-                        {'B', 'B', 'B', 'B', 'B', 'B', 'W', 'W', 'W'},
-                        {'B', 'G', 'W', 'W', 'W', 'B', 'B', 'W', 'W'},
-                        {'B', 'W', 'W', 'G', 'W', 'W', 'B', 'B', 'B'},
-                        {'B', 'W', 'W', 'W', 'W', 'W', 'P', 'R', 'B'},
-                        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
-                };
-                redX = 3;
-                redY = 7;
-                goalX = 1;
-                goalY = 1;
-                purpleX = 3;
-                purpleY = 6;
+                    {'W', 'B', 'B', 'B', 'B', 'B', 'W', 'W',  'W', 'W','W'},
+
+                    {'B', 'B', 'R', 'W', 'W', 'B', 'B', 'B',  'B', 'B','W'},
+
+                    {'B', 'W', 'W', 'W', 'W', 'B', 'B', 'G',  'W', 'B','W'},
+
+                    {'B', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  'W', 'B','B'},
+
+                    {'B', 'W', 'W', 'W', 'B', 'B', 'B', 'W',  'W', 'G','B'},
+
+                    {'B', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  'W', 'B','B'},
+
+                    {'B', 'B', 'P', 'W', 'B', 'B', 'B', 'B',  'B', 'B','W'},
+
+                    {'W', 'B', 'B', 'B', 'W', 'W', 'W', 'W',  'W', 'W','W'}
+
+
+            };
+                // board = new char[][]{
+                //         {'B', 'B', 'B', 'B', 'B', 'B', 'W', 'W', 'W'},
+                //         {'B', 'G', 'W', 'W', 'W', 'B', 'B', 'W', 'W'},
+                //         {'B', 'W', 'W', 'G', 'W', 'W', 'B', 'B', 'B'},
+                //         {'B', 'W', 'W', 'W', 'W', 'W', 'P', 'R', 'B'},
+                //         {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
+                // };
+//                redX = 2;
+//                redY = 3;
+//                goalX = 4;
+//                goalY = 9;
+//                purpleX = 7;
+//                purpleY = 3;
+//                goalXP = 3;
+//                goalYP = 7;
+                redX = 1;
+                redY = 2;
+                purpleX = 6;
+                purpleY = 2;
+                goalX = 4;
+                goalY = 9;
                 goalXP = 2;
-                goalYP = 3;
+                goalYP = 7;
+
 
 //                board = new char[originalBoard.length][originalBoard[0].length];
 //                for (int i = 0; i < originalBoard.length; i++) {
@@ -251,22 +279,21 @@ class Board {
         this.purpleX=newPurpleX;
         this.purpleY=purpleY;
     }
+
+
     public int getMisplacedTiles() {
         int misplacedCount = 0;
 
-        // فحص المكعب الأحمر
         if (redX != goalX || redY != goalY) {
             misplacedCount++;
         }
 
-        // فحص المكعب البنفسجي (إذا كان موجودًا)
         if (!singleCube && (purpleX != goalXP || purpleY != goalYP)) {
             misplacedCount++;
         }
 
         return misplacedCount;
     }
-
 
 
 

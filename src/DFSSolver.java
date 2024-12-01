@@ -29,7 +29,7 @@ public class DFSSolver {
         }
         visitedStates.add(currentState);
 
-        if (gameState.checkGoal()) {
+        if (gameState.checkGoal(gameState.board)) {
             return true;
         }
 

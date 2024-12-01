@@ -24,7 +24,7 @@ public class UCSSolver {
             List<String> currentPath = currentNode.path;
             int currentCost = currentNode.cost;
 
-            if (currentState.checkGoal()) {
+            if (currentState.checkGoal(currentState.board)) {
                 return currentPath;
             }
 
