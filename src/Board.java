@@ -251,6 +251,21 @@ class Board {
         this.purpleX=newPurpleX;
         this.purpleY=purpleY;
     }
+    public int getMisplacedTiles() {
+        int misplacedCount = 0;
+
+        // فحص المكعب الأحمر
+        if (redX != goalX || redY != goalY) {
+            misplacedCount++;
+        }
+
+        // فحص المكعب البنفسجي (إذا كان موجودًا)
+        if (!singleCube && (purpleX != goalXP || purpleY != goalYP)) {
+            misplacedCount++;
+        }
+
+        return misplacedCount;
+    }
 
 
 

@@ -429,7 +429,7 @@ return board;
 
             if (nextCell == 'G' &&
                     newRedX + 1 == board.getGoalX() && redY == board.getGoalY()) {
-                newRedX++; // التقدم إلى الهدف
+                newRedX++; 
                 break;
             }
 
@@ -501,70 +501,86 @@ return board;
         frame.setSize(700, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        /////////////////dfs///////////////////////////////
-        DFSSolver solver = new DFSSolver();
-        List<String> solution = solver.solve(gameState);
+        // /////////////////dfs///////////////////////////////
+        // DFSSolver solver = new DFSSolver();
+        // List<String> solution = solver.solve(gameState);
 
-        if (solution.isEmpty()) {
+        // if (solution.isEmpty()) {
+        //     System.out.println("No solution found.");
+        // } else {
+        //     System.out.println("Solution found:");
+        //     for (String move : solution) {
+        //         System.out.println(move);
+
+        //     }
+        //     System.out.println("---------------------DFS-----------------------------");
+
+        // }
+        // /////////////////////////////////////////////
+        // /////////////////dfs///////////////////////////////
+        // DFSSolverR solverRE = new DFSSolverR();
+        // List<String> solutionRE = solverRE.solve(gameState);
+
+        // if (solutionRE.isEmpty()) {
+        //     System.out.println("No solution found.");
+        // } else {
+        //     System.out.println("Solution found:");
+        //     for (String move : solutionRE) {
+        //         System.out.println(move);
+
+        //     }
+        //     System.out.println("---------------------DFSR-----------------------------");
+
+        // }
+        // /////////////////////////////////////////////
+        // //////////////////////bfs//////////////////
+        // BFSSolver solverB = new BFSSolver();
+        // List<String> solutionB = solverB.solve(gameState);
+
+        // if (solutionB.isEmpty()) {
+        //     System.out.println("No solution found.");
+        // } else {
+        //     System.out.println("Solution found:");
+        //     for (String move : solutionB) {
+        //         System.out.println(move);
+
+        //     }
+        //     System.out.println("---------------------BFS-----------------------------");
+
+        // }
+
+        // //////////////////////////////////////////
+        // //////////////////////////UCS/////////////////
+        // UCSSolver solverU = new UCSSolver();
+        // List<String> solutionU = solverU.solve(gameState);
+
+        // if (solutionU.isEmpty()) {
+        //     System.out.println("No solution found.");
+        // } else {
+        //     System.out.println("Solution found:");
+        //     for (String move : solutionU) {
+        //         System.out.println(move);
+        //     }
+        //     System.out.println("---------------------ucs-----------------------------");
+
+        // }
+        // /////////////////////////////////////////////
+        ///////////////////////ASTAR/////////////////////////////
+        AStarSolver solverA = new AStarSolver();
+        List<String> solutionA = solverA.solve(gameState);
+
+        if (solutionA.isEmpty()) {
             System.out.println("No solution found.");
         } else {
             System.out.println("Solution found:");
-            for (String move : solution) {
+            for (String move : solutionA) {
                 System.out.println(move);
 
             }
-            System.out.println("---------------------DFS-----------------------------");
+            System.out.println("---------------------ASTAR-----------------------------");
 
         }
-        /////////////////////////////////////////////
-        /////////////////dfs///////////////////////////////
-        DFSSolverR solverRE = new DFSSolverR();
-        List<String> solutionRE = solverRE.solve(gameState);
-
-        if (solutionRE.isEmpty()) {
-            System.out.println("No solution found.");
-        } else {
-            System.out.println("Solution found:");
-            for (String move : solutionRE) {
-                System.out.println(move);
-
-            }
-            System.out.println("---------------------DFSR-----------------------------");
-
-        }
-        /////////////////////////////////////////////
-        //////////////////////bfs//////////////////
-        BFSSolver solverB = new BFSSolver();
-        List<String> solutionB = solverB.solve(gameState);
-
-        if (solutionB.isEmpty()) {
-            System.out.println("No solution found.");
-        } else {
-            System.out.println("Solution found:");
-            for (String move : solutionB) {
-                System.out.println(move);
-
-            }
-            System.out.println("---------------------BFS-----------------------------");
-
-        }
-
-        //////////////////////////////////////////
-        //////////////////////////UCS/////////////////
-        UCSSolver solverU = new UCSSolver();
-        List<String> solutionU = solverU.solve(gameState);
-
-        if (solutionU.isEmpty()) {
-            System.out.println("No solution found.");
-        } else {
-            System.out.println("Solution found:");
-            for (String move : solutionU) {
-                System.out.println(move);
-            }
-            System.out.println("---------------------ucs-----------------------------");
-
-        }
-        /////////////////////////////////////////////
+        ////////////////////////////////////////////////
 
 
 
