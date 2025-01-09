@@ -24,10 +24,18 @@ public class AStarSolver {
                 return currentPath;
             }
 
+
             for (String direction : DIRECTIONS) {
                 State2 newState = cloneState(currentState);
+
+                int moveCost = currentState.board.calculateMoveCost(direction);
+                if (moveCost == Integer.MAX_VALUE) {
+                    continue;
+                }
+
                 newState.move(direction);
                 String encodedState = encodeState(newState.board);
+
                 if (!visitedStates.contains(encodedState)) {
                     visitedStates.add(encodedState);
                     visitedNodesCount++;
@@ -35,13 +43,14 @@ public class AStarSolver {
                     List<String> newPath = new ArrayList<>(currentPath);
                     newPath.add(direction);
 
-                    int gCost = currentNode.gCost + 1;
+                    int gCost = currentNode.gCost + moveCost;
                     int hCost = heuristic(newState);
                     int fCost = gCost + hCost;
-                    System.out.println("hhh"+hCost);
+
                     priorityQueue.add(new Node(newState, newPath, gCost, fCost));
                 }
             }
+
         }
 
         System.out.println("visitedNodesCount: " + visitedNodesCount);

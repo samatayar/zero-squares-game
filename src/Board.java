@@ -12,6 +12,36 @@ class Board {
         initializeBoard(level);
         saveBoardState();
     }
+    private int[][] playerPositions;
+    private int rows;
+    private int cols;
+
+    public int calculateMoveCost(String direction) {
+        int totalCost = 0;
+        for (int[] player : playerPositions) {
+            int x = player[0];
+            int y = player[1];
+            switch (direction.toLowerCase()) {
+                case "up":
+                    totalCost += (x > 0) ? 1 : Integer.MAX_VALUE;
+                    break;
+                case "down":
+                    totalCost += (x < rows - 1) ? 1 : Integer.MAX_VALUE;
+                    break;
+                case "left":
+                    totalCost += (y > 0) ? 1 : Integer.MAX_VALUE;
+                    break;
+                case "right":
+                    totalCost += (y < cols - 1) ? 1 : Integer.MAX_VALUE;
+                    break;
+            }
+        }
+        return totalCost;
+    }
+
+    public int[][] getPlayerPositions() {
+        return playerPositions;
+    }
     public char[][] getBoard() {
         return this.board;
     }
@@ -129,53 +159,26 @@ class Board {
         switch (level) {
             case 4 -> {
                 board = new char[][]{
-                    {'W', 'B', 'B', 'B', 'B', 'B', 'W', 'W',  'W', 'W','W'},
+                        {'W', 'W', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'W', 'W'},
+                        {'W', 'B', 'B', 'W', 'W', 'W', 'W', 'W', 'W', 'B', 'B', 'W'},
+                        {'B', 'B', 'W', 'W', 'B', 'W', 'G', 'B', 'W', 'W', 'B', 'B'},
+                        {'B', 'W', 'W', 'B', 'W', 'G', 'W', 'W', 'B', 'W', 'W', 'B'},
+                        {'B', 'W', 'W', 'W', 'W', 'B', 'W', 'W', 'B', 'B', 'W', 'B'},
+                        {'B', 'R', 'B', 'W', 'B', 'B', 'W', 'W', 'W', 'B', 'P', 'B'},
+                        {'B', 'W', 'W', 'W', 'B', 'W', 'W', 'W', 'W', 'W', 'W', 'B'},
+                        {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
 
-                    {'B', 'B', 'R', 'W', 'W', 'B', 'B', 'B',  'B', 'B','W'},
-
-                    {'B', 'W', 'W', 'W', 'W', 'B', 'B', 'G',  'W', 'B','W'},
-
-                    {'B', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  'W', 'B','B'},
-
-                    {'B', 'W', 'W', 'W', 'B', 'B', 'B', 'W',  'W', 'G','B'},
-
-                    {'B', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  'W', 'B','B'},
-
-                    {'B', 'B', 'P', 'W', 'B', 'B', 'B', 'B',  'B', 'B','W'},
-
-                    {'W', 'B', 'B', 'B', 'W', 'W', 'W', 'W',  'W', 'W','W'}
-
-
-            };
-                // board = new char[][]{
-                //         {'B', 'B', 'B', 'B', 'B', 'B', 'W', 'W', 'W'},
-                //         {'B', 'G', 'W', 'W', 'W', 'B', 'B', 'W', 'W'},
-                //         {'B', 'W', 'W', 'G', 'W', 'W', 'B', 'B', 'B'},
-                //         {'B', 'W', 'W', 'W', 'W', 'W', 'P', 'R', 'B'},
-                //         {'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
-                // };
-//                redX = 2;
-//                redY = 3;
-//                goalX = 4;
-//                goalY = 9;
-//                purpleX = 7;
-//                purpleY = 3;
-//                goalXP = 3;
-//                goalYP = 7;
-                redX = 1;
-                redY = 2;
-                purpleX = 6;
-                purpleY = 2;
-                goalX = 4;
-                goalY = 9;
+                };
+                redX = 5;
+                redY = 1;
+                goalX = 3;
+                goalY = 5;
+                purpleX = 5;
+                purpleY = 10;
                 goalXP = 2;
-                goalYP = 7;
+                goalYP = 6;
 
 
-//                board = new char[originalBoard.length][originalBoard[0].length];
-//                for (int i = 0; i < originalBoard.length; i++) {
-//                    System.arraycopy(originalBoard[i], 0, board[i], 0, originalBoard[i].length);
-//                }
             }
             case 5 -> {
                 board = new char[][]{
@@ -259,12 +262,7 @@ class Board {
         }
         System.out.println();
     }
-    //    public void restorePreviousState() {
-//        if (history.size() > 1) {
-//            history.remove(history.size() - 1);
-//            board = copyBoard(history.get(history.size() - 1));
-//        }
-//    }
+
     public void updateBoardAfterMove() {
         saveBoardState();
         printCurrentBoard();
@@ -279,8 +277,6 @@ class Board {
         this.purpleX=newPurpleX;
         this.purpleY=purpleY;
     }
-
-
     public int getMisplacedTiles() {
         int misplacedCount = 0;
 
@@ -294,7 +290,5 @@ class Board {
 
         return misplacedCount;
     }
-
-
 
 }

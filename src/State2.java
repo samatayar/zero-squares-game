@@ -15,35 +15,30 @@ public class State2 extends JPanel {
     public State2() {
         board = new Board(level);
     }
-
-
     public boolean checkGoal(Board board) {
-        // الحصول على المصفوفة من board
-        char[][] boardArray = board.getBoard(); // هذه المصفوفة تحتوي على الحروف التي تمثل الرقعة.
 
-        // المرور عبر كل السطور والأعمدة في المصفوفة
+        char[][] boardArray = board.getBoard();
+
+
         for (int i = 0; i < boardArray.length; i++) {
             for (int j = 0; j < boardArray[i].length; j++) {
-                // إذا كان هناك 'G' في أي مكان على الرقعة، نرجع false
                 if (boardArray[i][j] == 'G') {
                     return false;
                 }
             }
         }
+        if (board.isSingleCube()) {
+            return board.getRedX() == board.getGoalX() && board.getRedY() == board.getGoalY();
+        } else {
+            boolean redAtGoal = board.getRedX() == board.getGoalX() && board.getRedY() == board.getGoalY();
+            boolean purpleAtGoal = board.getPurpleX() == board.getGoalXP() && board.getPurpleY() == board.getGoalYP();
+            return redAtGoal && purpleAtGoal;
+        }
 
-        // إذا لم نجد 'G' في أي مكان، نرجع true
-        return true;
+
+
     }
 
-    //    public boolean checkGoal(Board board) {
-//        if (board.isSingleCube()) {
-//            return board.getRedX() == board.getGoalX() && board.getRedY() == board.getGoalY();
-//        } else {
-//            boolean redAtGoal = board.getRedX() == board.getGoalX() && board.getRedY() == board.getGoalY();
-//            boolean purpleAtGoal = board.getPurpleX() == board.getGoalXP() && board.getPurpleY() == board.getGoalYP();
-//            return redAtGoal && purpleAtGoal;
-//        }
-//    }
     public int getHeuristicValue() {
         int redDistance = Math.abs(board.getRedX() - board.getGoalX()) + Math.abs(board.getRedY() - board.getGoalY());
         int purpleDistance = 0;
@@ -84,217 +79,156 @@ public class State2 extends JPanel {
             }
         }
     }
-    public Board moveRight() {
-        // Move Red Cube
-        if (board.getRedX() >= 0 && board.getRedY() >= 0) {
-            int redX = board.getRedX();
-            int redY = board.getRedY();
-            int newRedY = redY;
 
-            while (newRedY < board.getBoard()[0].length - 1 &&
-                    board.getBoard()[redX][newRedY + 1] != 'B' &&
-                    board.getBoard()[redX][newRedY + 1] != 'R' &&
-                    board.getBoard()[redX][newRedY + 1] != 'P') {
-                newRedY++;
-            }
 
-            if (newRedY != redY) {
-                // Clear the old position
-                if (redX != board.getGoalX() || redY != board.getGoalY()) {
-                    if (board.getBoard()[redX][redY] != 'G') {
-                        board.getBoard()[redX][redY] = 'W';
+
+    public Board   moveRight() {
+        if (Math.abs(board.getPurpleY() - board.getRedY()) == 1 &&  board.getPurpleX() == board.getRedX()) {
+            if (board.getRedY() > board.getPurpleY()) {
+                // Move Red Cube
+                if (board.getRedX() >= 0 && board.getRedY() >= 0) {
+                    int redX = board.getRedX();
+                    int redY = board.getRedY();
+
+                    int newRedY = redY;
+                    while (newRedY < board.getBoard()[0].length - 1 &&
+                            board.getBoard()[redX][newRedY + 1] != 'B' &&
+                            board.getBoard()[redX][newRedY + 1] != 'R' &&
+                            board.getBoard()[redX][newRedY + 1] != 'P') {
+                        newRedY++;
                     }
-                } else {
-                    board.getBoard()[redX][redY] = 'G';
-                }
 
-                board.setRedPosition(redX, newRedY);
-                board.getBoard()[redX][newRedY] = 'R';
-            }
-        }
+                    if (newRedY != redY) {
+                        // Clear the old position
+                        if (redX != board.getGoalX() || redY != board.getGoalY()) {
+                            if (board.getBoard()[redX][redY] != 'G') {
+                                board.getBoard()[redX][redY] = 'W';
+                            }
+                        } else {
+                            board.getBoard()[redX][redY] = 'G';
+                        }
 
-        // Move Purple Cube
-        if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
-            int purpleX = board.getPurpleX();
-            int purpleY = board.getPurpleY();
-            int newPurpleY = purpleY;
-
-            while (newPurpleY < board.getBoard()[0].length - 1 &&
-                    board.getBoard()[purpleX][newPurpleY + 1] != 'B' &&
-                    board.getBoard()[purpleX][newPurpleY + 1] != 'R' &&
-                    board.getBoard()[purpleX][newPurpleY + 1] != 'P') {
-                newPurpleY++;
-            }
-
-            if (newPurpleY != purpleY) {
-                // Clear the old position
-                if (purpleX != board.getGoalX() || purpleY != board.getGoalY()) {
-                    if (board.getBoard()[purpleX][purpleY] != 'G') {
-                        board.getBoard()[purpleX][purpleY] = 'W';
+                        board.setRedPosition(redX, newRedY);
+                        board.getBoard()[redX][newRedY] = 'R';
                     }
-                } else {
-                    board.getBoard()[purpleX][purpleY] = 'G';
                 }
-
-                board.setPurplePosition(purpleX, newPurpleY);
-                board.getBoard()[purpleX][newPurpleY] = 'P';
-            }
-        }
-
-        repaint();
-        return board;
-    }
-
-
-///////////////////////تبعي السغال الاساسي
-//    public Board   moveRight() {
-//        if (Math.abs(board.getPurpleY() - board.getRedY()) == 1) {
-//            if (board.getRedY() > board.getPurpleY()) {
-//                // Move Red Cube
-//                if (board.getRedX() >= 0 && board.getRedY() >= 0) {
-//                    int redX = board.getRedX();
-//                    int redY = board.getRedY();
-//
-//                    int newRedY = redY;
-//                    while (newRedY < board.getBoard()[0].length - 1 &&
-//                            board.getBoard()[redX][newRedY + 1] != 'B' &&
-//                            board.getBoard()[redX][newRedY + 1] != 'R' &&
-//                            board.getBoard()[redX][newRedY + 1] != 'P') {
-//                        newRedY++;
-//                    }
-//
-//                    if (newRedY != redY) {
-//                        // Clear the old position
-//                        if (redX != board.getGoalX() || redY != board.getGoalY()) {
-//                            if (board.getBoard()[redX][redY] != 'G') {
-//                                board.getBoard()[redX][redY] = 'W';
-//                            }
-//                        } else {
-//                            board.getBoard()[redX][redY] = 'G';
-//                        }
-//
-//                        board.setRedPosition(redX, newRedY);
-//                        board.getBoard()[redX][newRedY] = 'R';
-//                    }
-//                }
-//            } else if (board.getPurpleY() > board.getRedY()) {
-//                // Move Purple Cube
-//                if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
-//                    int purpleX = board.getPurpleX();
-//                    int purpleY = board.getPurpleY();
-////////////////////////////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            } else if (board.getPurpleY() > board.getRedY()) {
+                // Move Purple Cube
+                if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
+                    int purpleX = board.getPurpleX();
+                    int purpleY = board.getPurpleY();
+//////////////////////////////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //                    if (purpleY == board.getRedY() + 1) {
 //                       return board;
 //                    }
-///////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-//                    int newPurpleY = purpleY;
-//                    while (newPurpleY < board.getBoard()[0].length - 1 &&
-//                            board.getBoard()[purpleX][newPurpleY + 1] != 'B' &&
-//                            board.getBoard()[purpleX][newPurpleY + 1] != 'R' &&
-//                            board.getBoard()[purpleX][newPurpleY + 1] != 'P') {
-//                        newPurpleY++;
-//                    }
-//
-//                    if (newPurpleY != purpleY) {
-//                        // Clear the old position
-//                        if (purpleX != board.getGoalX() || purpleY != board.getGoalY()) {
-//                            if (board.getBoard()[purpleX][purpleY] != 'G') {
-//                                board.getBoard()[purpleX][purpleY] = 'W';
-//                            }
-//                        } else {
-//                            board.getBoard()[purpleX][purpleY] = 'G';
-//                        }
-//
-//                        board.setPurplePosition(purpleX, newPurpleY);
-//                        board.getBoard()[purpleX][newPurpleY] = 'P';
-//                    }
-//                }
-//            }
-//        } else {
-//
-//
-//            if (board.getRedX() >= 0 && board.getRedY() >= 0) {
-//                int redX = board.getRedX();
-//                int redY = board.getRedY();
-//                int newRedY = redY;
-//
-//                while (newRedY < board.getBoard()[0].length - 1 &&
-//                        board.getBoard()[redX][newRedY + 1] != 'B' &&
-//                        board.getBoard()[redX][newRedY + 1] != 'R' &&
-//                        board.getBoard()[redX][newRedY + 1] != 'P') {
-//                    char nextCell = board.getBoard()[redX][newRedY + 1];
-//                    if (nextCell == 'G' && newRedY + 1 == board.getGoalY() && redX == board.getGoalX()) {
-//                        newRedY++;
-//                        break;
-//                   }
-//                    newRedY++;
-//                }
-//
-//                if (newRedY != redY) {
-//                    // Clear old position
-//                    if (redX != board.getGoalX() || redY != board.getGoalY()) {
-//                        board.getBoard()[redX][redY] = 'W';
-//                    }
-//
-//                    board.setRedPosition(redX, newRedY);
-//
-//                    if (newRedY == board.getGoalY() && redX == board.getGoalX()) {
-//                        board.removeRedCube();
-//                        board.getBoard()[redX][newRedY] = 'W';
-//                    } else {
-//                        board.getBoard()[redX][newRedY] = 'R';
-//                    }
-//                }
-//            }
-//
-//            if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
-//                int purpleX = board.getPurpleX();
-//                int purpleY = board.getPurpleY();
-//                int newPurpleY = purpleY;
-//
-//                while (newPurpleY < board.getBoard()[0].length - 1 &&
-//                        board.getBoard()[purpleX][newPurpleY + 1] != 'B' &&
-//                        board.getBoard()[purpleX][newPurpleY + 1] != 'R' &&
-//                        board.getBoard()[purpleX][newPurpleY + 1] != 'P') {
-//                    char nextCell = board.getBoard()[purpleX][newPurpleY + 1];
-//                    if (nextCell == 'G' && newPurpleY + 1 == board.getGoalY() && purpleX == board.getGoalX()) {
-//                        newPurpleY++;
-//                        break;
-//                    }
-//                    newPurpleY++;
-//                }
-//
-//                if (newPurpleY != purpleY) {
-//                    if (purpleX != board.getGoalX() || purpleY != board.getGoalY()) {
-//                        if (board.getBoard()[purpleX][purpleY] != 'G') {
-//                            board.getBoard()[purpleX][purpleY] = 'W';
-//                        }
-//                    } else {
-//                        board.getBoard()[purpleX][purpleY] = 'G';
-//                    }
-//                      board.getBoard()[purpleX][purpleY] = 'W';
-//
-//
-//                    board.setPurplePosition(purpleX, newPurpleY);
-//
-//
-//                    if (newPurpleY == board.getGoalYP() && purpleX == board.getGoalXP()) {
-//                        board.removePurpleCube();
-//                        board.getBoard()[purpleX][newPurpleY] = 'W';
-//                    } else {
-//                        board.getBoard()[purpleX][newPurpleY] = 'P';
-//                    }
-//                }
-//            }
-//
-//            repaint();
-//        }
-//
-//return board;
-//    }
+/////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+                    int newPurpleY = purpleY;
+                    while (newPurpleY < board.getBoard()[0].length - 1 &&
+                            board.getBoard()[purpleX][newPurpleY + 1] != 'B' &&
+                            board.getBoard()[purpleX][newPurpleY + 1] != 'R' &&
+                            board.getBoard()[purpleX][newPurpleY + 1] != 'P') {
+                        newPurpleY++;
+                    }
 
+                    if (newPurpleY != purpleY) {
+                        // Clear the old position
+                        if (purpleX != board.getGoalX() || purpleY != board.getGoalY()) {
+                            if (board.getBoard()[purpleX][purpleY] != 'G') {
+                                board.getBoard()[purpleX][purpleY] = 'W';
+                            }
+                        } else {
+                            board.getBoard()[purpleX][purpleY] = 'G';
+                        }
+
+                        board.setPurplePosition(purpleX, newPurpleY);
+                        board.getBoard()[purpleX][newPurpleY] = 'P';
+                    }
+                }
+            }
+        } else {
+
+
+            if (board.getRedX() >= 0 && board.getRedY() >= 0) {
+                int redX = board.getRedX();
+                int redY = board.getRedY();
+                int newRedY = redY;
+
+                while (newRedY < board.getBoard()[0].length - 1 &&
+                        board.getBoard()[redX][newRedY + 1] != 'B' &&
+                        board.getBoard()[redX][newRedY + 1] != 'R' &&
+                        board.getBoard()[redX][newRedY + 1] != 'P') {
+                    char nextCell = board.getBoard()[redX][newRedY + 1];
+                    if (nextCell == 'G' && newRedY + 1 == board.getGoalY() && redX == board.getGoalX()) {
+                        newRedY++;
+                        break;
+                    }
+                    newRedY++;
+                }
+
+                if (newRedY != redY) {
+                    // Clear old position
+                    if (redX != board.getGoalX() || redY != board.getGoalY()) {
+                        board.getBoard()[redX][redY] = 'W';
+                    }
+
+                    board.setRedPosition(redX, newRedY);
+
+                    if (newRedY == board.getGoalY() && redX == board.getGoalX()) {
+                        board.removeRedCube();
+                        board.getBoard()[redX][newRedY] = 'W';
+                    } else {
+                        board.getBoard()[redX][newRedY] = 'R';
+                    }
+                }
+            }
+
+            if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
+                int purpleX = board.getPurpleX();
+                int purpleY = board.getPurpleY();
+                int newPurpleY = purpleY;
+
+                while (newPurpleY < board.getBoard()[0].length - 1 &&
+                        board.getBoard()[purpleX][newPurpleY + 1] != 'B' &&
+                        board.getBoard()[purpleX][newPurpleY + 1] != 'R' &&
+                        board.getBoard()[purpleX][newPurpleY + 1] != 'P') {
+                    char nextCell = board.getBoard()[purpleX][newPurpleY + 1];
+                    if (nextCell == 'G' && newPurpleY + 1 == board.getGoalY() && purpleX == board.getGoalX()) {
+                        newPurpleY++;
+                        break;
+                    }
+                    newPurpleY++;
+                }
+
+                if (newPurpleY != purpleY) {
+                    if (purpleX != board.getGoalX() || purpleY != board.getGoalY()) {
+                        if (board.getBoard()[purpleX][purpleY] != 'G') {
+                            board.getBoard()[purpleX][purpleY] = 'W';
+                        }
+                    } else {
+                        board.getBoard()[purpleX][purpleY] = 'G';
+                    }
+                    //  board.getBoard()[purpleX][purpleY] = 'W';
+
+
+                    board.setPurplePosition(purpleX, newPurpleY);
+
+
+                    if (newPurpleY == board.getGoalYP() && purpleX == board.getGoalXP()) {
+                        board.removePurpleCube();
+                        board.getBoard()[purpleX][newPurpleY] = 'W';
+                    } else {
+                        board.getBoard()[purpleX][newPurpleY] = 'P';
+                    }
+                }
+            }
+
+            repaint();
+        }
+
+        return board;
+    }
     public Board moveLeft() {
-        // Move Red Cube
+
         if (board.getRedX() >= 0 && board.getRedY() >= 0) {
             int redX = board.getRedX();
             int redY = board.getRedY();
@@ -336,6 +270,7 @@ public class State2 extends JPanel {
             int purpleY = board.getPurpleY();
             int newPurpleY = purpleY;
 
+
             while (newPurpleY > 0) {
                 char nextCell = board.getBoard()[purpleX][newPurpleY - 1];
 
@@ -343,22 +278,25 @@ public class State2 extends JPanel {
                     break;
                 }
 
-                if (nextCell == 'G' && newPurpleY - 1 == board.getGoalYP() && purpleX == board.getGoalXP()) {
+                if (nextCell == 'G' && purpleX == board.getGoalXP() && newPurpleY - 1 == board.getGoalYP()) {
                     newPurpleY--;
                     break;
                 }
 
                 newPurpleY--;
             }
-
             if (newPurpleY != purpleY) {
-                if (purpleX != board.getGoalXP() || purpleY != board.getGoalYP()) {
+                if (purpleX == board.getGoalX() && purpleY == board.getGoalY()) {
+                    board.getBoard()[purpleX][purpleY] = 'G';
+                } else if (purpleX == board.getGoalXP() && purpleY == board.getGoalYP()) {
+                    board.getBoard()[purpleX][purpleY] = 'G';
+                } else {
                     board.getBoard()[purpleX][purpleY] = 'W';
                 }
 
                 board.setPurplePosition(purpleX, newPurpleY);
 
-                if (newPurpleY == board.getGoalYP() && purpleX == board.getGoalXP()) {
+                if (purpleX == board.getGoalXP() && newPurpleY == board.getGoalYP()) {
                     board.removePurpleCube();
                     board.getBoard()[purpleX][newPurpleY] = 'W';
                 } else {
@@ -367,11 +305,13 @@ public class State2 extends JPanel {
             }
         }
 
+
+
         repaint();
         return board;
     }
     public Board moveUp() {
-        // Move Red Cube
+
         if (board.getRedX() >= 0 && board.getRedY() >= 0) {
             int redX = board.getRedX();
             int redY = board.getRedY();
@@ -393,7 +333,7 @@ public class State2 extends JPanel {
             }
 
             if (newRedX != redX) {
-                // Clear old position
+
                 if (redX != board.getGoalX() || redY != board.getGoalY()) {
                     board.getBoard()[redX][redY] = 'W';
                 }
@@ -430,14 +370,13 @@ public class State2 extends JPanel {
             }
 
             if (newPurpleX != purpleX) {
-                if (purpleX != board.getGoalXP() || purpleY != board.getGoalYP()) {
-                    //board.getBoard()[purpleX][purpleY] = 'W';
-                    if (board.getBoard()[purpleX][purpleY] != 'G') {
-                        board.getBoard()[purpleX][purpleY] = 'W';
-                    }
-                } else {
-                    board.getBoard()[purpleX][purpleY] = 'G';
 
+                if (purpleX == board.getGoalX() && purpleY == board.getGoalY()) {
+                    board.getBoard()[purpleX][purpleY] = 'G';
+                } else if (purpleX == board.getGoalXP() && purpleY == board.getGoalYP()) {
+                    board.getBoard()[purpleX][purpleY] = 'G';
+                } else {
+                    board.getBoard()[purpleX][purpleY] = 'W';
                 }
 
                 board.setPurplePosition(newPurpleX, purpleY);
@@ -454,87 +393,92 @@ public class State2 extends JPanel {
         repaint();
         return board;
     }
+
+
     public Board moveDown() {
-    if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
-        int purpleX = board.getPurpleX();
-        int purpleY = board.getPurpleY();
+        if (!board.isSingleCube() && board.getPurpleX() >= 0 && board.getPurpleY() >= 0) {
+            int purpleX = board.getPurpleX();
+            int purpleY = board.getPurpleY();
 
-        int newPurpleX = purpleX;
+            int newPurpleX = purpleX;
 
-        while (newPurpleX < board.getBoard().length - 1) {
-            char nextCell = board.getBoard()[newPurpleX + 1][purpleY];
+            while (newPurpleX < board.getBoard().length - 1) {
+                char nextCell = board.getBoard()[newPurpleX + 1][purpleY];
 
-            if (nextCell == 'B' || nextCell == 'R' || nextCell == 'P') {
-                break;
-            }
+                if (nextCell == 'B' || nextCell == 'R' || nextCell == 'P') {
+                    break;
+                }
 
-            if (nextCell == 'G' &&
-                    newPurpleX + 1 == board.getGoalXP() && purpleY == board.getGoalYP()) {
+                if (nextCell == 'G' &&
+                        newPurpleX + 1 == board.getGoalXP() && purpleY == board.getGoalYP()) {
+                    newPurpleX++;
+                    break;
+                }
+
                 newPurpleX++;
-                break;
             }
 
-            newPurpleX++;
-        }
+            if (newPurpleX != purpleX) {
+                if (purpleX != board.getGoalXP() || purpleY != board.getGoalYP()) {
+                    if (board.getBoard()[purpleX][purpleY] != 'G') {
+                        board.getBoard()[purpleX][purpleY] = 'W';
+                    }
+                } else {
+                    board.getBoard()[purpleX][purpleY] = 'G';
+                }
+                board.setPurplePosition(newPurpleX, purpleY);
 
-        if (newPurpleX != purpleX) {
-            if (purpleX != board.getGoalXP() || purpleY != board.getGoalYP()) {
-                board.getBoard()[purpleX][purpleY] = 'W';
-            }
+                if (newPurpleX == board.getGoalXP() && purpleY == board.getGoalYP()) {
+                    board.removePurpleCube();
+                    board.getBoard()[newPurpleX][purpleY] = 'W';
 
-            board.setPurplePosition(newPurpleX, purpleY);
-
-            if (newPurpleX == board.getGoalXP() && purpleY == board.getGoalYP()) {
-                board.removePurpleCube();
-                board.getBoard()[newPurpleX][purpleY] = 'W';
-
-            } else {
-                board.getBoard()[newPurpleX][purpleY] = 'P';
-            }
-        }
-    }
-
-
-    if (board.getRedX() >= 0 && board.getRedY() >= 0) {
-        int redX = board.getRedX();
-        int redY = board.getRedY();
-
-        int newRedX = redX;
-
-        while (newRedX < board.getBoard().length - 1) {
-            char nextCell = board.getBoard()[newRedX + 1][redY];
-
-            if (nextCell == 'B' || nextCell == 'R' || nextCell == 'P') {
-                break;
-            }
-
-            if (nextCell == 'G' &&
-                    newRedX + 1 == board.getGoalX() && redY == board.getGoalY()) {
-                newRedX++; 
-                break;
-            }
-
-            newRedX++;
-        }
-
-        if (newRedX != redX) {
-            if (redX != board.getGoalX() || redY != board.getGoalY()) {
-                board.getBoard()[redX][redY] = 'W';
-            }
-
-            board.setRedPosition(newRedX, redY);
-
-            if (newRedX == board.getGoalX() && redY == board.getGoalY()) {
-                board.getBoard()[newRedX][redY] = 'G';
-            } else {
-                board.getBoard()[newRedX][redY] = 'R';
+                } else {
+                    board.getBoard()[newPurpleX][purpleY] = 'P';
+                }
             }
         }
-    }
 
-    repaint();
+
+        if (board.getRedX() >= 0 && board.getRedY() >= 0) {
+            int redX = board.getRedX();
+            int redY = board.getRedY();
+
+            int newRedX = redX;
+
+            while (newRedX < board.getBoard().length - 1) {
+                char nextCell = board.getBoard()[newRedX + 1][redY];
+
+                if (nextCell == 'B' || nextCell == 'R' || nextCell == 'P') {
+                    break;
+                }
+
+                if (nextCell == 'G' &&
+                        newRedX + 1 == board.getGoalX() && redY == board.getGoalY()) {
+                    newRedX++;
+                    break;
+                }
+
+                newRedX++;
+            }
+
+            if (newRedX != redX) {
+                if (redX != board.getGoalX() || redY != board.getGoalY()) {
+                    board.getBoard()[redX][redY] = 'W';
+                }
+
+                board.setRedPosition(newRedX, redY);
+
+                if (newRedX == board.getGoalX() && redY == board.getGoalY()) {
+                    board.getBoard()[newRedX][redY] = 'G';
+                } else {
+                    board.getBoard()[newRedX][redY] = 'R';
+                }
+            }
+        }
+
+        repaint();
         return board;
-}
+    }
     public void move(String direction) {
         switch (direction.toLowerCase()) {
             case "left":
@@ -543,22 +487,24 @@ public class State2 extends JPanel {
             case "right":
                 moveRight();
                 break;
-        case "up":
-            moveUp();
-            break;
-        case "down":
-            moveDown();
-            break;
-        default:
-            System.out.println("Invalid direction");
-            return;
+            case "up":
+                moveUp();
+                break;
+            case "down":
+                moveDown();
+                break;
+            default:
+                System.out.println("Invalid direction");
+                return;
 
         }
 
         board.updateBoardAfterMove();
         repaint();
     }
-
+    public int calculateMoveCost(String direction) {
+        return board.calculateMoveCost(direction);
+    }
     private static void printBoard(Board board) {
         char[][] grid = board.getBoard();
         for (char[] row : grid) {
@@ -575,85 +521,54 @@ public class State2 extends JPanel {
 
 
         JFrame frame = new JFrame("zero squares");
-       // Board tempBoard = new Board(1);
-       // StateDFS gameState2 = new StateDFS();
+
         State2 gameState = new State2();
         frame.add(gameState);
         frame.setSize(700, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        // /////////////////dfs///////////////////////////////
-        HillClimbingSolver solver = new HillClimbingSolver();
-         List<String> solution = solver.solve(gameState);
 
-         if (solution.isEmpty()) {
-             System.out.println("No solution found.");
-         } else {
-             System.out.println("Solution found:");
-             for (String move : solution) {
-                 System.out.println(move);
+        /////////////////////////////////////////////
+        //////////////////hillclambing////////////////
+        HillClimbingSolver solverH = new HillClimbingSolver();
+        List<String> solutionH = solverH.solve(gameState);
 
-             }
-             System.out.println("---------------------HillClimbing-----------------------------");
+        if (solutionH.isEmpty()) {
+            System.out.println("No solution found.");
+        } else {
+            System.out.println("Solution found:");
+            for (String move : solutionH) {
+                System.out.println(move);
 
-         }
-        // /////////////////////////////////////////////
-        // /////////////////dfs///////////////////////////////
-//         DFSSolverR solverRE = new DFSSolverR();
-//         List<String> solutionRE = solverRE.solve(gameState);
-//
-//         if (solutionRE.isEmpty()) {
-//             System.out.println("No solution found.");
-//         } else {
-//             System.out.println("Solution found:");
-//             for (String move : solutionRE) {
-//                 System.out.println(move);
-//
-//             }
-//             System.out.println("---------------------DFSR-----------------------------");
-//
-//         }
-        // /////////////////////////////////////////////
-        // //////////////////////bfs//////////////////
-        // BFSSolver solverB = new BFSSolver();
-        // List<String> solutionB = solverB.solve(gameState);
+            }
+            System.out.println("---------------------HillClimbing-----------------------------");
 
-        // if (solutionB.isEmpty()) {
-        //     System.out.println("No solution found.");
-        // } else {
-        //     System.out.println("Solution found:");
-        //     for (String move : solutionB) {
-        //         System.out.println(move);
+        }
+//        //////////////////////////////////////////
 
-        //     }
-        //     System.out.println("---------------------BFS-----------------------------");
+//        //////////////////////////////////////////
+        //////////////////hillclambing////////////////
+        HillClambingSimpleSolver solverHS = new HillClambingSimpleSolver();
+        List<String> solutionHS = solverHS.solve(gameState);
 
-        // }
+        if (solutionHS.isEmpty()) {
+            System.out.println("No solution found.");
+        } else {
+            System.out.println("Solution found:");
+            for (String move : solutionHS) {
+                System.out.println(move);
 
-        // //////////////////////////////////////////
-        // //////////////////////////UCS/////////////////
-//         UCSSolver solverU = new UCSSolver();
-//         List<String> solutionU = solverU.solve(gameState);
-//
-//         if (solutionU.isEmpty()) {
-//             System.out.println("No solution found.");
-//         } else {
-//             System.out.println("Solution found:");
-//             for (String move : solutionU) {
-//                 System.out.println(move);
-//             }
-//             System.out.println("---------------------ucs-----------------------------");
-//
-//        }
-        // /////////////////////////////////////////////
-        ///////////////////////ASTAR/////////////////////////////
+            }
+            System.out.println("---------------------HillClimbingSimple-----------------------------");
+
+        }
+        //////////////////////////////////////////
+//        ///////////////////////ASTAR/////////////////////////////
         AStarSolver solverA = new AStarSolver();
         List<String> solutionA = solverA.solve(gameState);
 
         if (solutionA.isEmpty()) {
-
             System.out.println("No solution found.");
-
         } else {
             System.out.println("Solution found:");
             for (String move : solutionA) {
@@ -663,9 +578,6 @@ public class State2 extends JPanel {
             System.out.println("---------------------ASTAR-----------------------------");
 
         }
-        ////////////////////////////////////////////////
-
-
 
         frame.addKeyListener(new KeyListener() {
             @Override
@@ -686,7 +598,7 @@ public class State2 extends JPanel {
                     }
                     return;
                 }
-               // gameState2.dfsSolve();
+                // gameState2.dfsSolve();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP -> gameState.move("up");
                     case KeyEvent.VK_DOWN -> gameState.move("down");
@@ -712,11 +624,6 @@ public class State2 extends JPanel {
         System.out.println();
     }
 }
-
-
-/////////////////////////////////////////////////////////////////
-
-
 
 
 
